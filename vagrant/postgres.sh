@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Installing PostgreSQL Server 9.3.6
+# Installing PostgreSQL Server 9.3.7
 # Setting Up Database Server
 
 apt-get -y install postgresql postgresql-contrib
