@@ -1,8 +1,4 @@
 --> Drop All Tables
-DROP TABLE IF EXISTS invoices;
-DROP TABLE IF EXISTS categories;
-DROP TABLE IF EXISTS loans;
-DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS users;
 
 --> Users Table
