@@ -6,7 +6,7 @@ This is a Flask web application for budgeting construction projects.
 
 It is recommended to use vagrant to use the Python interpreter and the PostgreSQL database server on the VM.
 
-## Required Software:
+## Required software:
 
 1. [VirtualBox] (https://www.virtualbox.org/wiki/Downloads)
 2. [Vagrant] (http://vagrantup.com)

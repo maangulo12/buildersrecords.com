@@ -5,7 +5,7 @@
     db_create.py
     ---------------
 
-    Run this script to automatically create your tables from db_schema.sql
+    Run this script to automatically create the tables from db_schema.sql
 """
 
 from app.db import connect_db
