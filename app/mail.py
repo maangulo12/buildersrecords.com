@@ -4,38 +4,20 @@
     mail.py
     ~~~~~~~~~~~~
 
-    This module adds mail service to the application.
-
+    This module implements the methods for email service.
 """
 
+from flask import render_template
+from flask_mail import Message
 
-from flask_mail import Mail, Message
-
-from app import app
-
-
-app.config.update(
-    MAIL_SERVER='smtp.gmail.com',
-    MAIL_PORT=465,
-    MAIL_USE_SSL=True,
-    MAIL_USERNAME='shumadda@gmail.com',
-    MAIL_PASSWORD='total90411568',
-    MAIL_DEFAULT_SENDER=("BuildersRecords", "shumadda@gmail.com")
-)
-mail = Mail(app)
+from app import mail
 
 
 def send_registration_email(form):
     """
-    This function sends out a registration email.
+    This function sends a registration email.
     """
-    msg = Message("Welcome to BuildersRecords", recipients=[form.email.data])
-    msg.html = "Welcome to BuildersRecords," + "<br>" + \
-               "<br>" + \
-               "Thank you for creating an account with us." + "<br>" + \
-               "<br>" + \
-               "Your username is: " + "<b>" + form.username.data + "</b>" + "<br>" + \
-               "Your password is: " + "<b>" + form.password.data + "</b>" + "<br>" + \
-               "<br>" + \
-               "-From the BuildersRecords team"
+    msg = Message("Thank you from BuildersRecords", recipients=[form.email.data])
+    msg.html = render_template('email/registration.html', username = form.username.data,
+                                                          password = form.password.data)
     mail.send(msg)

@@ -5,9 +5,7 @@
     ~~~~~~~~~~~~
 
     This module implements the classes for creating and validating forms.
-
 """
-
 
 from flask_wtf import Form
 from wtforms import StringField, PasswordField, validators
@@ -18,12 +16,12 @@ from app.data.users import *
 
 
 class SignupForm(Form):
-    first_name = StringField('First Name', [DataRequired(), validators.Length(max=30)])
-    last_name = StringField('Last Name', [DataRequired(), validators.Length(max=30)])
-    email = StringField('Email', [DataRequired(), validators.Length(max=50)])
-    username = StringField('Username', [DataRequired(), validators.Length(max=25)])
-    password = PasswordField('Password', [DataRequired(), validators.Length(min=5, max=25)])
-    confirm_password = PasswordField('Confirm Password', [DataRequired(), validators.Length(min=5, max=25)])
+    first_name       = StringField  ('First Name',       [DataRequired(), validators.Length(max=30)])
+    last_name        = StringField  ('Last Name',        [DataRequired(), validators.Length(max=30)])
+    email            = StringField  ('Email',            [DataRequired(), validators.Length(max=50)])
+    username         = StringField  ('Username',         [DataRequired(), validators.Length(max=25)])
+    password         = PasswordField('Password',         [DataRequired(), validators.Length(min=5, max=40)])
+    confirm_password = PasswordField('Confirm Password', [DataRequired(), validators.Length(min=5, max=40)])
 
     def validate(self):
         """

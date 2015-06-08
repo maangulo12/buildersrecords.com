@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """
-Functions for CRUD content from the users table.
-"""
+    users.py
+    ~~~~~~~~~~~~
 
+    This module implements the functions for CRUD content for the users table.
+"""
 
 # Check if username exists
 def username_exists(cur, username):

@@ -5,18 +5,16 @@
     db.py
     ~~~~~~~~~~~~
 
-    This module implements the functions for accessing the PostgreSQL database. It also includes the functions for
-    hashing and checking passwords.
-
+    This module implements the methods for accessing the PostgreSQL database.
 """
 
 import os
-from bcrypt import hashpw, gensalt
 from psycopg2 import connect, Error
 from urllib.parse import uses_netloc, urlparse
 from flask import g
 
 from app import app
+from app.config import *
 
 
 def connect_db():
@@ -26,15 +24,17 @@ def connect_db():
     :return: Database connection
     """
     uses_netloc.append('postgres')
-    url = urlparse(os.environ["DATABASE_URL"])
+    # url = urlparse(os.environ["DATABASE_URL"])
+    # Uncomment line below to use the PostgreSQL database server on the VM.
+    url = urlparse(DB_ENGINE + '://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + ':' + DB_PORT + '/' + DB_NAME)
 
     try:
         conn = connect(
-            database=url.path[1:],
-            user=url.username,
-            password=url.password,
-            host=url.hostname,
-            port=url.port
+            database = url.path[1:],
+            user     = url.username,
+            password = url.password,
+            host     = url.hostname,
+            port     = url.port
         )
         conn.autocommit = True
         return conn
@@ -58,7 +58,7 @@ def get_cursor():
 @app.teardown_appcontext
 def teardown_db(e):
     """
-    Function is called at the end of each request regardless of whether
+    Method is called at the end of each request regardless of whether
     there was an exception or not. It teardowns database connection if there was one.
 
     :param e: exception
@@ -66,13 +66,3 @@ def teardown_db(e):
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
-
-
-def hash_password(password):
-    """
-    Hashes the password using bcrypt.
-
-    :param password: password characters
-    :return: password hashed
-    """
-    return hashpw(password.encode('utf-8'), gensalt(12))

@@ -6,9 +6,7 @@
     ---------------
 
     Run this script to automatically create your tables from db_schema.sql
-
 """
-
 
 from app.db import connect_db
 
@@ -16,7 +14,7 @@ from app.db import connect_db
 def run_sql_file(filename, conn):
     """
     The function takes a filename and a connection as inputs
-    and will run the SQL query on the given connection
+    and will run the SQL query on the given connection.
     """
 
     file = open(filename, 'r')
