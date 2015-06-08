@@ -4,7 +4,7 @@
     users.py
     ~~~~~~~~~~~~
 
-    This module implements the functions for CRUD content for the users table.
+    This module implements the methods for CRUD content for the users table.
 """
 
 # Check if username exists
@@ -19,6 +19,7 @@ def username_exists(cur, username):
     if count == 1:
         return True
 
+
 # Check if email exists
 def email_exists(cur, email):
     cur.execute('''
@@ -30,6 +31,7 @@ def email_exists(cur, email):
     (count,) = cur.fetchone()
     if count == 1:
         return True
+
 
 # Insert a new user into users table
 def add_user(cur, form, pw_hash):

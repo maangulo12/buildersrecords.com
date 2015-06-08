@@ -24,9 +24,9 @@ def connect_db():
     :return: Database connection
     """
     uses_netloc.append('postgres')
-    # url = urlparse(os.environ["DATABASE_URL"])
+    url = urlparse(os.environ["DATABASE_URL"])
     # Uncomment line below to use the PostgreSQL database server on the VM.
-    url = urlparse(DB_ENGINE + '://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + ':' + DB_PORT + '/' + DB_NAME)
+    # url = urlparse(DB_ENGINE + '://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + ':' + DB_PORT + '/' + DB_NAME)
 
     try:
         conn = connect(

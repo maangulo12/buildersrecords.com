@@ -15,7 +15,7 @@ from app import mail
 
 def send_registration_email(form):
     """
-    This function sends a registration email.
+    This method sends a registration email.
     """
     msg = Message("Thank you from BuildersRecords", recipients=[form.email.data])
     msg.html = render_template('email/registration.html', username = form.username.data,
