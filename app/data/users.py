@@ -43,3 +43,29 @@ def add_user(cur, form, pw_hash):
               form.first_name.data,
               form.last_name.data,
               form.email.data))
+
+
+# Get username from given email
+def get_username(cur, email):
+    cur.execute('''
+        SELECT username
+        FROM users
+        WHERE email = %s
+    ''', (email,))
+
+    (username,) = cur.fetchone()
+    if username is not None:
+        return username
+
+
+# Get password hash for a given username
+def get_pw_hash(cur, username):
+    cur.execute('''
+        SELECT pw_hash
+        FROM users
+        WHERE username = %s
+    ''', (username,))
+
+    (pw_hash,) = cur.fetchone()
+    if pw_hash is not None:
+        return pw_hash

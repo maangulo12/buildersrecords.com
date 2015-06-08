@@ -12,6 +12,7 @@ from wtforms import StringField, PasswordField, validators
 from wtforms.validators import DataRequired
 
 from app.db import get_cursor
+from app.utility import check_password
 from app.data.users import *
 
 
@@ -48,3 +49,33 @@ class SignupForm(Form):
             return False
 
         return True
+
+
+class LoginForm(Form):
+    username = StringField  ('Username or Email', [DataRequired()])
+    password = PasswordField('Password',          [DataRequired()])
+
+    def authenticate(self):
+        """
+        Checks if the form is valid and authenticates the user by checking email or username and password.
+
+        :return: False if user is not valid.
+        """
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        user = self.username.data
+
+        cur = get_cursor()
+        if email_exists(cur, user):
+            user = get_username(cur, user)
+
+        if username_exists(cur, user):
+            pw_hash = get_pw_hash(cur, user)
+
+            if check_password(self.password.data, pw_hash):
+                self.username.data = user
+                return True
+
+        return False
