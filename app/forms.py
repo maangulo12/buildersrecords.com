@@ -79,3 +79,24 @@ class LoginForm(Form):
                 return True
 
         return False
+
+
+class PasswordResetForm(Form):
+    email = StringField('Email Address', [DataRequired()])
+
+    def validate(self):
+        """
+        Checks if the form is valid and validates the email address.
+
+        :return: False if the email address is not valid.
+        """
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        cur = get_cursor()
+        if not email_exists(cur, self.email.data):
+            self.email.errors.append('Please check your email address.')
+            return False
+
+        return True

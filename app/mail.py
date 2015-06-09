@@ -21,3 +21,12 @@ def send_registration_email(form):
     msg.html = render_template('email/registration.html', username = form.username.data,
                                                           password = form.password.data)
     mail.send(msg)
+
+
+def send_password_reset_email(email):
+    """
+    This method sends an email to reset password.
+    """
+    msg = Message("Reset your password", recipients=[email])
+    msg.html = render_template('email/password_reset.html')
+    mail.send(msg)

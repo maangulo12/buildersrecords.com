@@ -11,8 +11,8 @@ from flask import *
 
 from app.db import get_cursor
 from app.utility import hash_password
-from app.forms import SignupForm, LoginForm
-from app.mail import send_registration_email
+from app.forms import SignupForm, LoginForm, PasswordResetForm
+from app.mail import send_registration_email, send_password_reset_email
 from app.data.users import *
 from app import app, csrf
 
@@ -79,3 +79,32 @@ def login():
 
         flash('Incorrect username / password combination. Please try again.')
         return render_template('login.html', form = form)
+
+
+@app.route('/logout/')
+def logoff():
+    """
+    Route for url: server/logout/
+    """
+    if 'username' in session:
+        session.pop('username', None)
+
+    return redirect(url_for('login'))
+
+
+@app.route('/password_reset/', methods=['GET', 'POST'])
+def password_reset():
+    """
+    Route for url: server/password_reset/
+    """
+    form = PasswordResetForm()
+    if request.method == 'GET':
+        return render_template('password_reset.html', form = form)
+
+    if request.method == 'POST':
+        if form.validate():
+            send_password_reset_email(form.email.data)
+            return render_template('password_reset_confirmation.html')
+
+        flash('Could not find that email. Please try again.')
+        return render_template('password_reset.html', form = form)

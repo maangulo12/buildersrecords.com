@@ -73,7 +73,7 @@
                             <!-- Password Field -->
                             {{ render_field(form.password) }}
                             <!-- Forgot Password -->
-                            <a href="/password_reset/"><b> Forgot Password? </b></a>
+                            <a href="{{ url_for('password_reset') }}"><b> Forgot Password? </b></a>
                             <!-- Submit -->
                             <div class="form-group text-right">
                                 <button type="submit" class="btn btn-primary"> Sign In </button>
