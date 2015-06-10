@@ -69,3 +69,16 @@ def get_pw_hash(cur, username):
     (pw_hash,) = cur.fetchone()
     if pw_hash is not None:
         return pw_hash
+
+
+# Get user_id from username
+def get_user_id(cur, username):
+    cur.execute('''
+        SELECT user_id
+        FROM users
+        WHERE username = %s
+    ''', (username,))
+
+    (user_id,) = cur.fetchone()
+    if user_id is not None:
+        return user_id

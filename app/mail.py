@@ -19,7 +19,8 @@ def send_registration_email(form):
     """
     msg = Message("Thank you from BuildersRecords", recipients=[form.email.data])
     msg.html = render_template('email/registration.html', username = form.username.data,
-                                                          password = form.password.data)
+                                                          first_name = form.first_name.data,
+                                                          last_name = form.last_name.data)
     mail.send(msg)
 
 

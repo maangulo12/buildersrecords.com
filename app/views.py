@@ -14,6 +14,7 @@ from app.utility import hash_password
 from app.forms import SignupForm, LoginForm, PasswordResetForm
 from app.mail import send_registration_email, send_password_reset_email
 from app.data.users import *
+from app.data.projects import *
 from app import app, csrf
 
 
@@ -22,6 +23,13 @@ def home():
     """
     Route for url: server/
     """
+    if 'username' in session:
+        cur = get_cursor()
+        user_id      = get_user_id(cur, session['username'])
+        project_list = get_project_list(cur, user_id)
+        return render_template('user_home.html', username     = session['username'],
+                                                 project_list = project_list)
+
     return render_template('home.html')
 
 
@@ -57,6 +65,7 @@ def signup():
             add_user(cur, form, pw_hash)
             send_registration_email(form)
             session['username'] = form.username.data
+            flash('Welcome to BuildersRecords! Thank you for creating an account.')
             return redirect(url_for('home'))
 
         flash('There were problems creating your account.')
@@ -75,6 +84,7 @@ def login():
     if request.method == 'POST':
         if form.authenticate():
             session['username'] = form.username.data
+            flash('You have successfully logged in! Get started by choosing a project.')
             return redirect(url_for('home'))
 
         flash('Incorrect username / password combination. Please try again.')
@@ -88,8 +98,9 @@ def logoff():
     """
     if 'username' in session:
         session.pop('username', None)
+        return redirect(url_for('login'))
 
-    return redirect(url_for('login'))
+    return abort(404)
 
 
 @app.route('/password_reset/', methods=['GET', 'POST'])
