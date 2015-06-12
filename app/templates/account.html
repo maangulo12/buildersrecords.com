@@ -1,0 +1,98 @@
+{% extends "layout.html" %}
+{% block title %} BuildersRecords {% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/account.js') }}"></script>{% endblock %}
+{% block body %}
+    <body class="body">
+        <!-- Navigation Bar -->
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <!-- Navigation Bar Header -->
+                <div class="navbar-header">
+                    <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only"> Toggle navigation </span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <!-- Navigation Bar Brand -->
+                    <a class="navbar-brand" href="{{ url_for('home') }}"> BuildersRecords </a>
+                </div>
+                <!-- Navigation Bar List Items -->
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="{{ url_for('account') }}">
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <b> {{ username }} </b>
+                            </a>
+                        </li>
+                        <li style="padding-left: 0.75em;">
+                            <button id="logout_button" style="width: 6.5em" type="button" class="btn btn-danger navbar-btn">
+                                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> <b> Log Off </b>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+            <!-- Alert -->
+            <div class="container">
+                <div id="alert" class="alert alert-info alert-dismissible text-center" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true"> &times; </span>
+                    </button> <b> {{ message }} </b>
+                </div>
+            </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <!-- Left & Right -->
+        <div class="container">
+            <div class="row">
+                <!-- Left Side -->
+                <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+                    <!-- List Group -->
+                    <ul class="list-group">
+                        <a href="{{ url_for('account') }}" class="list-group-item active"> Account </a>
+                        <a href="{{ url_for('password') }}" class="list-group-item"> Change Password </a>
+                    </ul>
+                </div>
+                <!-- Right Side -->
+                <div class="col-xs-12 col-sm-12 pull-left col-md-6 col-lg-6">
+                    <!-- Page Header -->
+                    <h3> Edit My Account </h3>
+                    <!-- Well -->
+                    <div class="well">
+                        <!-- Form -->
+                        <form name="account_form" onsubmit="return validateForm()" action="{{ url_for('account') }}"
+                              method="POST">
+                          {% macro render_field(field, msg, label_visible=true) %}
+                            <div id="{{ field.id }}_group" class="form-group{% if field.errors %} has-error
+                            has-feedback{% endif %}{{kwargs.pop('class_', '') }}">{% if field.type != 'HiddenField' and label_visible %}
+                                {{ field.label(class_='control-label', **kwargs) }}{% endif %}
+                                <div class="col-xs-12 col-sm-12 col-md-7 col-lg-7 input-group">
+                                    {{ field(class_='form-control', **kwargs) }}{% if field.errors %}
+                                    <span id="{{ field.id }}_icon" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                                    <span id="{{ field.id }}_helper_text" class="help-block"> {{ field.errors[0] }}
+                                    </span>{% endif %}
+                                </div>
+                            </div>
+                          {% endmacro %}
+                            {{ form.csrf_token }}
+                            <!-- First Name Field -->
+                            {{ render_field(form.first_name) }}
+                            <!-- Last Name Field -->
+                            {{ render_field(form.last_name) }}
+                            <!-- Email Field -->
+                            {{ render_field(form.email) }}
+                            <!-- Update -->
+                            <div class="form-group text-right">
+                                <button type="submit" class="btn btn-primary"> <b> Update Account </b> </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>{{ super() }}
+    </body>{% endblock %}

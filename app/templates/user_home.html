@@ -20,12 +20,12 @@
                 <!-- Navigation Bar List Items -->
                 <div class="collapse navbar-collapse">
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a href="/account/">
+                        <li><a href="{{ url_for('account') }}">
                               <span class="glyphicon glyphicon-user" aria-hidden="true"></span> <b> {{ username }} </b>
                             </a>
                         </li>
                         <li style="padding-left: 0.75em;">
-                            <button id="logoff_button" style="width: 6.5em" type="button" class="btn btn-danger navbar-btn">
+                            <button id="logout_button" style="width: 6.5em" type="button" class="btn btn-danger navbar-btn">
                                 <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span> <b> Log Off </b>
                             </button>
                         </li>

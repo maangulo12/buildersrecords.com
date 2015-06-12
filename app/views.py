@@ -11,7 +11,7 @@ from flask import *
 
 from app.db import get_cursor
 from app.utility import hash_password
-from app.forms import SignupForm, LoginForm, PasswordResetForm
+from app.forms import SignupForm, LoginForm, PasswordResetForm, AccountForm, PasswordForm
 from app.mail import send_registration_email, send_password_reset_email
 from app.data.users import *
 from app.data.projects import *
@@ -60,7 +60,7 @@ def signup():
 
     if request.method == 'POST':
         if form.validate():
-            cur = get_cursor()
+            cur     = get_cursor()
             pw_hash = hash_password(form.password.data)
             add_user(cur, form, pw_hash)
             send_registration_email(form)
@@ -92,7 +92,7 @@ def login():
 
 
 @app.route('/logout/')
-def logoff():
+def logout():
     """
     Route for url: server/logout/
     """
@@ -119,3 +119,57 @@ def password_reset():
 
         flash('Could not find that email. Please try again.')
         return render_template('password_reset.html', form = form)
+
+
+@app.route('/settings/account/', methods=['GET', 'POST'])
+def account():
+    """
+    Route for url: server/settings/account/
+    """
+    if 'username' in session:
+        form = AccountForm()
+        if request.method == 'GET':
+            cur = get_cursor()
+            user_data            = get_user_data(cur, session['username'])
+            form.first_name.data = user_data['first_name']
+            form.last_name.data  = user_data['last_name']
+            form.email.data      = user_data['email']
+            return render_template('account.html', form     = form,
+                                                   username = session['username'])
+
+        if request.method == 'POST':
+            if form.validate():
+                cur = get_cursor()
+                update_user_data(cur, form, session['username'])
+                flash('Your account information has been successfully updated!')
+                return redirect(url_for('account'))
+
+            return render_template('account.html', form     = form,
+                                                   username = session['username'])
+
+    return abort(404)
+
+
+@app.route('/settings/password/', methods=['GET', 'POST'])
+def password():
+    """
+    Route for url: server/settings/password/
+    """
+    if 'username' in session:
+        form = PasswordForm()
+        if request.method == 'GET':
+            return render_template('password.html', form     = form,
+                                                    username = session['username'])
+
+        if request.method == 'POST':
+            if form.validate():
+                cur     = get_cursor()
+                pw_hash = hash_password(form.new_password.data)
+                update_password(cur, pw_hash, session['username'])
+                flash('Your password has been successfully updated!')
+                return redirect(url_for('password'))
+
+            return render_template('password.html', form = form,
+                                                    username = session['username'])
+
+    return abort(404)

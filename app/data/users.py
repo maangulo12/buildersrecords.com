@@ -82,3 +82,45 @@ def get_user_id(cur, username):
     (user_id,) = cur.fetchone()
     if user_id is not None:
         return user_id
+
+
+# Get user's information
+def get_user_data(cur, username):
+    cur.execute('''
+        SELECT user_id, first_name, last_name, email
+        FROM users
+        WHERE username = %s
+    ''', (username,))
+
+    for (user_id, first_name, last_name, email) in cur:
+        user = {
+            'user_id': user_id,
+            'first_name': first_name,
+            'last_name': last_name,
+            'email': email
+        }
+        return user
+
+
+# Update user's information
+def update_user_data(cur, form, username):
+    cur.execute('''
+      UPDATE users
+      SET first_name = %s,
+          last_name = %s,
+          email= %s
+      WHERE username = %s
+        ''', (form.first_name.data,
+              form.last_name.data,
+              form.email.data,
+              username))
+
+
+# Update user's password
+def update_password(cur, pw_hash, username):
+    cur.execute('''
+      UPDATE users
+      SET pw_hash = %s
+      WHERE username = %s
+        ''', (pw_hash,
+              username))
