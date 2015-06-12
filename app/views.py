@@ -24,7 +24,7 @@ def home():
     Route for url: server/
     """
     if 'username' in session:
-        cur = get_cursor()
+        cur          = get_cursor()
         user_id      = get_user_id(cur, session['username'])
         project_list = get_project_list(cur, user_id)
         return render_template('user_home.html', username     = session['username'],
@@ -129,7 +129,7 @@ def account():
     if 'username' in session:
         form = AccountForm()
         if request.method == 'GET':
-            cur = get_cursor()
+            cur                  = get_cursor()
             user_data            = get_user_data(cur, session['username'])
             form.first_name.data = user_data['first_name']
             form.last_name.data  = user_data['last_name']
