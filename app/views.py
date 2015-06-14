@@ -65,7 +65,7 @@ def signup():
             add_user(cur, form, pw_hash)
             send_registration_email(form)
             session['username'] = form.username.data
-            flash('Welcome to BuildersRecords! Thank you for creating an account.')
+            flash('Welcome to BuildersRecords! Thank you for creating an account with us.')
             return redirect(url_for('home'))
 
         flash('There were problems creating your account.')
@@ -84,7 +84,6 @@ def login():
     if request.method == 'POST':
         if form.authenticate():
             session['username'] = form.username.data
-            flash('You have successfully logged in! Get started by choosing a project.')
             return redirect(url_for('home'))
 
         flash('Incorrect username / password combination. Please try again.')

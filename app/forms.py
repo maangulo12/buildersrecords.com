@@ -136,7 +136,7 @@ class PasswordForm(Form):
         if not rv:
             return False
 
-        cur = get_cursor()
+        cur     = get_cursor()
         pw_hash = get_pw_hash(cur, session['username'])
         if not check_password(self.old_password.data, pw_hash):
             self.old_password.errors.append('Did not find a match.')
