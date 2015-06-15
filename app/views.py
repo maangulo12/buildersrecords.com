@@ -172,3 +172,21 @@ def password():
                                                     username = session['username'])
 
     return abort(404)
+
+
+#------------------------------- AJAX VIEWS -------------------------------
+
+@app.route('/delete_project/')
+def delete_project():
+    """
+    AJAX
+    Route for url: server/delete_project/
+    """
+    if 'username' in session:
+        project_id = request.args.get('project_id', 0, type = int)
+        cur        = get_cursor()
+        user_id    = get_user_id(cur, session['username'])
+        remove_project(cur, user_id, project_id)
+        return jsonify(msg = 'Project removed')
+
+    return abort(404)

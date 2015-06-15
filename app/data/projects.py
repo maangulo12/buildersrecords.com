@@ -28,3 +28,12 @@ def get_project_list(cur, user_id):
             'project_cost': project_cost
         })
     return project_list
+
+
+# Delete a specific project for a given user
+def remove_project(cur, user_id, project_id):
+    cur.execute('''
+        DELETE FROM projects
+        WHERE user_id = %s
+        AND project_id = %s
+    ''', (user_id, project_id))

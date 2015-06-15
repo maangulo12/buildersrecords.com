@@ -1,6 +1,10 @@
 {% extends "layout.html" %}
 {% block title %} BuildersRecords {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', filename='js/user_home.js') }}"></script>{% endblock %}
+{% block scripts %}
+        <script type=text/javascript>
+            $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+        </script>
+        <script src="{{ url_for('static', filename='js/user_home.js') }}"></script>{% endblock %}
 {% block body %}
     <body class="body">
         <!-- Navigation Bar -->
@@ -122,16 +126,17 @@
                                 <span aria-hidden="true"> &times; </span>
                             </button>
                             <h4 class="modal-title">
-                                <b> Delete Project </b>
+                                <b class="text-danger"> Delete Project </b>
                             </h4>
                         </div>
                         <!---- Modal Body ---->
                         <div class="modal-body">
-                            <p> </p>
+                            <p class="text-center"> Deleting your project is <b> irreversible </b>. Are you sure you would like to delete it? </p>
                         </div>
                         <!---- Modal Footer ---->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal"> <b> Close </b> </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"> <b> No </b> </button>
+                            <button id="delete_project_confirm" type="button" class="btn btn-danger" data-dismiss="modal"> <b> Yes, Delete </b> </button>
                         </div>
                     </div>
                 </div>
@@ -157,7 +162,7 @@
                         </div>
                         <!---- Modal Footer ---->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal"> <b> Close </b> </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"> <b> Cancel </b> </button>
                         </div>
                     </div>
                 </div>
