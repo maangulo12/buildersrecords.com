@@ -8,20 +8,21 @@
 """
 
 from flask_wtf import Form
-from wtforms import StringField, PasswordField, validators
-from wtforms.validators import DataRequired, Length, EqualTo, Email
-from flask import session
+from wtforms import StringField, PasswordField, SelectField, FileField
+from wtforms.validators import DataRequired, Length, EqualTo, Email, Regexp
+from flask import session, request
 
 from app.db import get_cursor
-from app.utility import check_password
+from app.utility import check_password, allowed_file
 from app.data.users import *
+from app.data.projects import *
 
 
 class SignupForm(Form):
     first_name       = StringField  ('First Name',       [DataRequired(), Length(max = 30)])
     last_name        = StringField  ('Last Name',        [DataRequired(), Length(max = 30)])
-    email            = StringField  ('Email',            [DataRequired(), Length(max = 50), Email()])
-    username         = StringField  ('Username',         [DataRequired(), Length(max = 25)])
+    email            = StringField  ('Email',            [DataRequired(), Length(max = 50),          Email()])
+    username         = StringField  ('Username',         [DataRequired(), Length(max = 25),          Regexp(r'^[\w.@+-]+$',      message = 'No spaces allowed.' )])
     password         = PasswordField('Password',         [DataRequired(), Length(min = 5, max = 40), EqualTo('confirm_password', message = 'Passwords must match.')])
     confirm_password = PasswordField('Confirm Password', [DataRequired(), Length(min = 5, max = 40), EqualTo('password',         message = '')])
 
@@ -29,7 +30,7 @@ class SignupForm(Form):
         """
         Checks if the form is valid and validates the email, username, and password.
 
-        :return: False if email or username or password are not valid.
+        :return: False if the email or username or password are not valid.
         """
         rv = Form.validate(self)
         if not rv:
@@ -55,7 +56,7 @@ class LoginForm(Form):
         """
         Checks if the form is valid and authenticates the user by checking email or username and password.
 
-        :return: False if user is not valid.
+        :return: False if the user is not valid.
         """
         rv = Form.validate(self)
         if not rv:
@@ -107,7 +108,7 @@ class AccountForm(Form):
         """
         Checks if the form is valid and validates the email.
 
-        :return: False if email is not valid.
+        :return: False if the email is not valid.
         """
         rv = Form.validate(self)
         if not rv:
@@ -122,15 +123,15 @@ class AccountForm(Form):
 
 
 class PasswordForm(Form):
-    old_password = PasswordField    ('Old Password',     [DataRequired(), Length(min = 5, max = 25)])
-    new_password = PasswordField    ('New Password',     [DataRequired(), Length(min = 5, max = 25), EqualTo('confirm_password', message = 'Passwords must match.')])
+    old_password     = PasswordField('Old Password',     [DataRequired(), Length(min = 5, max = 25)])
+    new_password     = PasswordField('New Password',     [DataRequired(), Length(min = 5, max = 25), EqualTo('confirm_password', message = 'Passwords must match.')])
     confirm_password = PasswordField('Confirm Password', [DataRequired(), Length(min = 5, max = 25), EqualTo('new_password',     message = '')])
 
     def validate(self):
         """
         Checks if the form is valid and validates the old and new passwords.
 
-        :return: False if old or new passwords are not valid.
+        :return: False if the old or new passwords are not valid.
         """
         rv = Form.validate(self)
         if not rv:
@@ -140,6 +141,54 @@ class PasswordForm(Form):
         pw_hash = get_pw_hash(cur, session['username'])
         if not check_password(self.old_password.data, pw_hash):
             self.old_password.errors.append('Did not find a match.')
+            return False
+
+        return True
+
+
+class NewForm(Form):
+    project_name = StringField('Project Name',    [DataRequired(),  Length(max = 50)])
+    project_type = SelectField('Type of Project', [DataRequired()], choices = [('create', 'Create my own'), ('ubuildit', 'UBuildIt'),])
+
+    def validate(self):
+        """
+        Checks if the form is valid and validates the project name and project type.
+
+        :return: False if the project name or project type are not valid.
+        """
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        cur     = get_cursor()
+        user_id = get_user_id(cur, session['username'])
+        if project_name_exists(cur, self.project_name.data, user_id):
+            self.project_name.errors.append('A project already exists with that name.')
+            return False
+
+        return True
+
+
+class UploadForm(Form):
+    file = FileField('Excel File', [DataRequired()])
+
+    def validate(self):
+        """
+        Checks if the form is valid and validates the file extension.
+
+        :return: False if the file extension is not valid.
+        """
+        rv = Form.validate(self)
+        if not rv:
+            return False
+
+        file = request.files['file']
+        if not file:
+            self.file.errors.append('Could not find your file.')
+            return False
+
+        if not allowed_file(file.filename):
+            self.file.errors.append('Only excel files can be uploaded (only .xls or .xlsx )')
             return False
 
         return True

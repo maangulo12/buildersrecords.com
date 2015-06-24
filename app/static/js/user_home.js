@@ -15,9 +15,10 @@ $(function() {
     });
 
     $('#delete_project_confirm').on('click', function() {
-        $.getJSON($SCRIPT_ROOT + '/delete_project/', {
-            project_id: project_id
-        }, function(data) {
+        $.getJSON(
+            '/delete_project_ajax/',
+            { project_id: project_id }
+        ).done(function() {
             location.reload();
         });
     });

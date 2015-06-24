@@ -5,28 +5,25 @@
     db.py
     ~~~~~~~~~~~~
 
-    This module implements the methods for accessing the PostgreSQL database.
+    This module implements the methods for accessing the database.
 """
 
-import os
 from psycopg2 import connect, Error
 from urllib.parse import uses_netloc, urlparse
 from flask import g
 
 from app import app
-from app.config import *
+from app.config import DATABASE_URL
 
 
-def connect_db():
+def connect_db(autocommit = True):
     """
     Creates a connection to the PostgreSQL database server.
 
     :return: Database connection
     """
     uses_netloc.append('postgres')
-    url = urlparse(os.environ["DATABASE_URL"])
-    # Uncomment line below to use the PostgreSQL database server on the VM.
-    # url = urlparse(DB_ENGINE + '://' + DB_USERNAME + ':' + DB_PASSWORD + '@' + DB_SERVER + ':' + DB_PORT + '/' + DB_NAME)
+    url = urlparse(DATABASE_URL)
 
     try:
         conn = connect(
@@ -36,7 +33,7 @@ def connect_db():
             host     = url.hostname,
             port     = url.port
         )
-        conn.autocommit = True
+        conn.autocommit = autocommit
         return conn
 
     except Error as e:

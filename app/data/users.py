@@ -4,7 +4,7 @@
     users.py
     ~~~~~~~~~~~~
 
-    This module implements the methods for CRUD content for the users table.
+    This module implements the methods for CRUD content to the users table.
 """
 
 # Check if username exists

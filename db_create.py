@@ -12,11 +12,6 @@ from app.db import connect_db
 
 
 def run_sql_file(filename, conn):
-    """
-    The function takes a filename and a connection as inputs
-    and will run the SQL query on the given connection.
-    """
-
     file = open(filename, 'r')
     sql = " ".join(file.readlines())
     print("\n" + "Start executing: " + filename + "\n")

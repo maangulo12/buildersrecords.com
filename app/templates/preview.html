@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block title %} BuildersRecords {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', filename='js/user_home.js') }}"></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='js/preview.js') }}"></script>{% endblock %}
 {% block body %}
     <body class="body">
         <!-- Navigation Bar -->
@@ -38,7 +38,7 @@
             {% for message in messages %}
         <!-- Alert -->
         <div class="container">
-            <div id="alert" class="alert alert-info alert-dismissible text-center" role="alert">
+            <div id="alert" class="alert alert-success alert-dismissible text-center" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true"> &times; </span>
                 </button> <b> {{ message }} </b>
@@ -50,22 +50,32 @@
         <!-- Page Header -->
         <div class="container">
             <div class="page-header">
-                <h1> My Projects
-                  {% if not project_list %}
-                    <small> | Start a new project </small>
-                  {% else %}
-                    <small> | Select a project </small>
-                  {% endif %}
+                <h1> Preview Your Project
+                <small> | {{ project_name }} </small>
                 </h1>
                 <hr>
             </div>
         </div>
         <!-- Buttons -->
         <div class="container">
-            <button id="new_project_button" type="button" class="btn btn-success">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                <b> New Project </b>
-            </button>
+            <div class="row">
+                <div class="col-sm-3 col-sm-push-9">
+                    <button id="create_project_button" type="button" class="btn btn-primary btn-lg">
+                        <b> Create Project </b>
+                    </button>
+                </div>
+                <br>
+                <div class="col-sm-9 col-sm-pull-3">
+                    <button id="add_button" type="button" class="btn btn-success">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        <b> Add </b>
+                    </button>
+                    <button id="delete_project_button" type="button" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+                        <b> Delete </b>
+                    </button>
+                </div>
+            </div>
         </div>
         <br>
         <!-- Table -->
@@ -73,45 +83,69 @@
             <table class="table table-striped table-hover table-bordered">
                 <thead>
                     <tr>
-                        <th> <span class="glyphicon glyphicon-tag" aria-hidden="true"></span> </th>
-                        <th> Project Name</th>
-                        <th> Project Type </th>
+                        <th> <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> </th>
+                        <th> Cost Category </th>
+                        <th> Description </th>
+                        <th> Budget </th>
+                        <th> Actual </th>
                         <th> Action </th>
                     <tr>
                 </thead>
-              {% for project in project_list %}
+                {% set grand_total = {'budget': 0.0, 'actual': 0.0} %}
+                {% for category in categories %}
                 <tbody>
                     <tr>
-                        <td> {{ project.project_id }} </td>
-                        <td><a href="{{ url_for('dashboard', username=username, project_id=project.project_id) }}"><b> {{ project.project_name }} </b></a></td>
-                        <td> {{ project.project_type }} </td>
-                        <td><button id="{{ project.project_id }}" type="button" class="btn btn-danger delete_project_button"
+                        <th></th>
+                        <th colspan="5">
+                            <span class="text-success"> {{ category.category_name }} </span>
+                        </th>
+                    </tr>
+                    {% set total = {'budget': 0.0, 'actual': 0.0} %}
+                    {% for item in category.item_list %}
+                    <tr>
+                        <td> <input type="checkbox"> </td>
+                        <td> {{ item.cost_category }} </td>
+                        <td> {{ item.notes }}  </td>
+                        <td align="right"> ${{ '{:,.2f}'.format(item.budget) }} </td>
+                        <td align="right"> ${{ '{:,.2f}'.format(item.actual) }} </td>
+                        <td><button id="1" type="button" class="btn btn-danger delete_item_button"
                                     data-toggle="tooltip" data-placement="top" title="Delete">
                                 <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
                             </button>
-                            <button id="{{ project.project_id }}" type="button" class="btn btn-default edit_project_button"
+                            <button id="1" type="button" class="btn btn-default edit_item_button"
                                     data-toggle="tooltip" data-placement="top" title="Edit">
                                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                             </button>
                         </td>
                     </tr>
-                </tbody>
-              {% endfor %}
-              {% if not project_list %}
-                <tbody>
+                        {% if total.update({'budget': total.budget + item.budget, 'actual': total.actual + item.actual}) %} {% endif %}
+                    {% endfor %}
                     <tr>
-                        <td colspan="1"></td>
-                        <td colspan="3">
-                            <a href="{{ url_for('new') }}"> <b> Create New Project </b> </a>
-                        </td>
+                        <th></th>
+                        <th></th>
+                        <th> Total {{ category.category_name }} </th>
+                        <td align="right"> <b> ${{ '{:,.2f}'.format(total.budget) }} </b> </td>
+                        <td align="right"> <b> ${{ '{:,.2f}'.format(total.actual) }} </b> </td>
+                        <th></th>
                     </tr>
+                    {% if grand_total.update({'budget': grand_total.budget + total.budget, 'actual': grand_total.actual + total.actual}) %} {% endif %}
                 </tbody>
-              {% endif %}
+                {% endfor %}
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th class="text-success"> Project Grand Total </th>
+                        <td class="text-success" align="right"> <b> ${{ '{:,.2f}'.format(grand_total.budget) }} </b> </td>
+                        <td class="text-success" align="right"> <b> ${{ '{:,.2f}'.format(grand_total.actual) }} </b> </td>
+                        <th></th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
-        <!-- Modal - Delete Project -->
+        <!-- Modal - Delete Item -->
         <div class="container">
-            <div class="modal fade" id="delete_project_modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal fade" id="delete_item_modal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <!-- Modal Header -->
@@ -120,17 +154,16 @@
                                 <span aria-hidden="true"> &times; </span>
                             </button>
                             <h4 class="modal-title">
-                                <b class="text-danger"> Delete Project </b>
+                                <b> Delete Item </b>
                             </h4>
                         </div>
                         <!-- Modal Body -->
                         <div class="modal-body">
-                            <p class="text-center"> Deleting your project is <b> irreversible </b>. Are you sure you would like to delete it? </p>
+                            <p class="text-center"> </p>
                         </div>
                         <!-- Modal Footer -->
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal"> <b> No </b> </button>
-                            <button id="delete_project_confirm" type="button" class="btn btn-danger" data-dismiss="modal"> <b> Yes, Delete </b> </button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal"> <b> Cancel </b> </button>
                         </div>
                     </div>
                 </div>
@@ -138,7 +171,7 @@
         </div>
         <!-- Modal - Edit Project -->
         <div class="container">
-            <div class="modal fade" id="edit_project_modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal fade" id="edit_item_modal" tabindex="-1" role="dialog" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <!-- Modal Header -->
@@ -147,7 +180,7 @@
                                 <span aria-hidden="true"> &times; </span>
                             </button>
                             <h4 class="modal-title">
-                                <b> Edit Project </b>
+                                <b> Edit Item </b>
                             </h4>
                         </div>
                         <!-- Modal Body -->
@@ -161,5 +194,7 @@
                     </div>
                 </div>
             </div>
-        </div>{{ super() }}
+        </div>
+        <br><br><br>
+        {{ super() }}
     </body>{% endblock %}

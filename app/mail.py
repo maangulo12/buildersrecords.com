@@ -28,6 +28,6 @@ def send_password_reset_email(email):
     """
     This method sends an email to reset password.
     """
-    msg = Message("Reset your password", recipients = [email])
+    msg = Message("Please reset your password", recipients = [email])
     msg.html = render_template('email/password_reset.html')
     mail.send(msg)

@@ -9,15 +9,9 @@
     :copyright: (c) 2015 by Miguel Angulo.
 """
 
-import os
-
 from app import app
-from app.config import *
+from app.config import SERVER_HOST, SERVER_PORT, DEBUG_FLAG
 
 
 if __name__ == '__main__':
-    app.run(
-        host  = os.environ.get('SERVER_HOST', SERVER_HOST),
-        port  = int(os.environ.get('SERVER_PORT', SERVER_PORT)),
-        debug = DEBUG_FLAG
-    )
+    app.run(host = SERVER_HOST, port = SERVER_PORT, debug = DEBUG_FLAG)

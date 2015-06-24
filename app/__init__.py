@@ -17,20 +17,19 @@ from app.config import *
 
 
 app = Flask(__name__)
-app.secret_key = APP_SECRET_KEY
-
-# MAIL SERVICE
 app.config.update(
+    SECRET_KEY          = SECRET_KEY,
     MAIL_SERVER         = MAIL_SERVER,
     MAIL_PORT           = MAIL_PORT,
     MAIL_USE_SSL        = MAIL_USE_SSL,
     MAIL_USERNAME       = MAIL_USERNAME,
     MAIL_PASSWORD       = MAIL_PASSWORD,
-    MAIL_DEFAULT_SENDER = MAIL_DEFAULT_SENDER
+    MAIL_DEFAULT_SENDER = MAIL_DEFAULT_SENDER,
+    UPLOAD_FOLDER       = UPLOAD_FOLDER
 )
+
 mail = Mail(app)
 
-# CSRF PROTECTION
 csrf = CsrfProtect()
 csrf.init_app(app)
 

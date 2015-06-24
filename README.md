@@ -9,7 +9,7 @@ It is recommended to run vagrant to use the Python interpreter and the PostgreSQ
 ## Required software:
 
 1. [VirtualBox] (https://www.virtualbox.org/wiki/Downloads)
-2. [Vagrant] (http://vagrantup.com)
+2. [Vagrant] (https://www.vagrantup.com/downloads.html)
 
 ## Get Started:
 
